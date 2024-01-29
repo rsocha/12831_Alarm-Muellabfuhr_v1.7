@@ -1,0 +1,129 @@
+# -*- coding: iso8859-1 -*-
+## -----------------------------------------------------
+## Alarm Müllabfuhr   ### v1.7
+##
+## erstellt am: 2015-06-20 18:58
+## -----------------------------------------------------
+## Copyright © 2010, knx-user-forum e.V, All rights reserved.
+##
+## This program is free software; you can redistribute it and/or modify it under the terms
+## of the GNU General Public License as published by the Free Software Foundation; either
+## version 3 of the License, or (at your option) any later version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+## without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+## See the GNU General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License along with this program;
+## if not, see <http://www.gnu.de/documents/gpl-3.0.de.html>.
+
+## -- 
+## -- 
+## --  
+
+#5000|"Text"|Remanent(1/0)|Anz.Eingänge|.n.|Anzahl Ausgänge|.n.|.n.
+#5001|Anzahl Eingänge|Ausgänge|Offset|Speicher|Berechnung bei Start
+#5002|Index Eingang|Default Wert|0=numerisch 1=alphanummerisch
+#5003|Speicher|Initwert|Remanent
+#5004|ausgang|Initwert|runden binär (0/1)|typ (1-send/2-sbc)|0=numerisch 1=alphanummerisch
+#5012|abbruch bei bed. (0/1)|bedingung|formel|zeit|pin-ausgang|pin-offset|pin-speicher|pin-neg.ausgang
+
+5000|"socha.at\Alarm Müllabfuhr_v1.7"|0|8|"E1 Ü-Zyklus 1 (Sek.)"|"E2 Ü-Zyklus 2(Sek.)"|"E3 Reset"|"E4 Biotonne Status"|"E5 Restmüll Status"|"E6 Papiertonne Status"|"E7 gelber Sack Status"|"E8 Sammelzentrum Status"|10|"A1 Alarm 1 Biotonne"|"A2 Alarm 2 Biotonne"|"A3 Alarm 1 Restmüll"|"A4 Alarm 2 Restmüll"|"A5 Alarm 1 Papiertonne"|"A6 Alarm 2 Papiertonne"|"A7 Alarm 1 gelber Sack"|"A8 Alarm 2 gelber Sack"|"A9 Alarm 1 Sammelzentrum"|"A10 Alarm 2 Sammelzentrum"
+
+#5001|Anzahl Eingänge|Ausgänge|Offset|Speicher|Berechnung bei Start
+5001|8|10|10|5|1
+
+#5002|Index Eingang|Default Wert|0=numerisch 1=alphanummerisch
+5002|1|5|0                # Überwachungszyklus 1 in Sekunden
+5002|2|5|0                # Überwachungszyklus 2 in Sekunden
+5002|3|0|0                # Resetsignal
+5002|4|0|0                # Biotonne Status
+5002|5|0|0                # Restmüll Status
+5002|6|0|0                # Papiertonne Status
+5002|7|0|0                # gelber Sack Status
+5002|8|0|0                # Sammelzentrum Status
+
+#5003|Speicher|Initwert|Remanent
+5003|1|0|0
+5003|2|0|0
+5003|3|0|0
+5003|4|0|0
+5003|5|0|0
+
+
+#5004|Ausgang|Initwert|runden binär (0/1)|typ (1-send/2-sbc)|0=numerisch 1=alphanummerisch
+5004|1|0|1|2|0           # Ausgang 1
+5004|2|0|1|2|0           # Ausgang 2
+5004|3|0|1|2|0           # Ausgang 3
+5004|4|0|1|2|0           # Ausgang 4
+5004|5|0|1|2|0           # Ausgang 5
+5004|6|0|1|2|0           # Ausgang 6
+5004|7|0|1|2|0           # Ausgang 7
+5004|8|0|1|2|0           # Ausgang 8
+5004|9|0|1|2|0           # Ausgang 9
+5004|10|0|1|2|0          # Ausgang 10
+
+#################################################
+
+
+
+
+#Biotonne
+5012|0|"EC[4] and (EN[4]==0)"|"0"|""|1|0|1|0
+5012|0|"EI or EC[1] or (EC[4] and (EN[4]==1) and (EN[1]>0))"|"0"|"EN[1]"|1|1|0|0
+#5012|0|"EC[3] and EN[4] and (EN[1]>0)"|"0"|"EN[1]"|1|1|0|0
+5012|0|"OC[1] and EN[4] and (EN[1]>0)"|"1"|"EN[1]"|1|0|1|0
+
+
+5012|0|"EC[4] and (EN[4]==0)"|"0"|""|2|0|0|0
+5012|0|"EI or EC[2] or (SC[1] and (SN[1]==1) and (EN[2]>0))"|"0"|"EN[2]"|2|2|0|0
+#5012|0|"EC[3] and SN[1] and (EN[2]>0)"|"0"|"EN[2]"|2|2|0|0
+5012|0|"OC[2] and SN[1] and (EN[2]>0)"|"1"|"EN[2]"|2|0|0|0
+
+#Restmuell
+5012|0|"EC[5] and (EN[5]==0)"|"0"|""|3|0|2|0
+5012|0|"EI or EC[1] or (EC[5] and (EN[5]==1) and (EN[1]>0))"|"0"|"EN[1]"|3|3|0|0
+#5012|0|"EC[3] and EN[5] and (EN[1]>0)"|"0"|"EN[1]"|3|3|0|0
+5012|0|"OC[3] and EN[5] and (EN[1]>0)"|"1"|"EN[1]"|3|0|2|0
+
+5012|0|"EC[5] and (EN[5]==0)"|"0"|""|4|0|2|0
+5012|0|"EI or EC[2] or (SC[2] and (SN[2]==1) and (EN[2]>0))"|"0"|"EN[2]"|4|4|0|0
+#5012|0|"EC[3] and SN[2] and (EN[2]>0)"|"0"|"EN[2]"|4|4|0|0
+5012|0|"OC[4] and SN[2] and (EN[2]>0)"|"1"|"EN[2]"|4|0|0|0
+
+#Papiertonne
+5012|0|"EC[6] and (EN[6]==0)"|"0"|""|5|0|3|0
+5012|0|"EI or EC[1] or (EC[6] and (EN[6]==1) and (EN[1]>0))"|"0"|"EN[1]"|5|5|0|0
+#5012|0|"EC[3] and EN[6] and (EN[1]>0)"|"0"|"EN[1]"|5|5|0|0
+5012|0|"OC[5] and EN[6] and (EN[1]>0)"|"1"|"EN[1]"|5|0|3|0
+
+5012|0|"EC[6] and (EN[6]==0)"|"0"|""|6|0|3|0
+5012|0|"EI or EC[2] or (SC[3] and (SN[3]==1) and (EN[2]>0))"|"0"|"EN[2]"|6|6|0|0
+#5012|0|"EC[3] and SN[3] and (EN[2]>0)"|"0"|"EN[2]"|6|6|0|0
+5012|0|"OC[6] and SN[3] and (EN[2]>0)"|"1"|"EN[2]"|6|0|0|0
+
+#gelber Sack
+5012|0|"EC[7] and (EN[7]==0)"|"0"|""|7|0|4|0
+5012|0|"EI or EC[1] or (EC[7] and (EN[7]==1) and (EN[1]>0))"|"0"|"EN[1]"|7|7|0|0
+#5012|0|"EC[3] and EN[7] and (EN[1]>0)"|"0"|"EN[1]"|7|7|0|0
+5012|0|"OC[7] and EN[7] and (EN[1]>0)"|"1"|"EN[1]"|7|0|4|0
+
+5012|0|"EC[7] and (EN[7]==0)"|"0"|""|8|0|4|0
+5012|0|"EI or EC[2] or (SC[4] and (SN[4]==1) and (EN[2]>0))"|"0"|"EN[2]"|8|8|0|0
+#5012|0|"EC[3] and SN[4] and (EN[2]>0)"|"0"|"EN[2]"|8|8|0|0
+5012|0|"OC[8] and SN[4] and (EN[2]>0)"|"1"|"EN[2]"|8|0|0|0
+
+#Sammelzentrum
+5012|0|"EC[8] and (EN[8]==0)"|"0"|""|9|0|5|0
+5012|0|"EI or EC[1] or (EC[8] and (EN[8]==1) and (EN[1]>0))"|"0"|"EN[1]"|9|9|0|0
+#5012|0|"EC[3] and EN[8] and (EN[1]>0)"|"0"|"EN[1]"|9|9|0|0
+5012|0|"OC[9] and (EN[8]==1) and (EN[1]>0)"|"1"|"EN[1]"|9|0|5|0
+
+5012|0|"EC[8] and (EN[8]==0)"|"0"|""|10|0|5|0
+5012|0|"EI or EC[2] or (SC[5] and (SN[5]==1) and (EN[2]>0))"|"0"|"EN[2]"|10|10|0|0
+#5012|0|"EC[3] and SN[5] and (EN[2]>0)"|"0"|"EN[2]"|10|10|0|0
+5012|0|"OC[10] and SN[5] and (EN[2]>0)"|"1"|"EN[2]"|10|0|0|0
+
+
+
+
